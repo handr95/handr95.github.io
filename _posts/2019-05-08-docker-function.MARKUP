@@ -1,0 +1,28 @@
+---
+title: "docker의 기능"
+date: 2019-05-08 
+categories:
+	- docker
+---
+
+### docker 컴포넌트
+
+
+* docker engine : 도커의 핵심 기능
+** docker 이미지를 생성하고 컨테이너를 기동시키기 위한 docker 의 핵심 기능.
+** docker 명령의 실행이나 dockerfile에 의한 이미지도 생성합니다.
+
+* docker registry : 이미지 공개 및 공유
+** 컨테이너의 바탕이 되는 docker 이미지를 공개 및 공유하기 위한 레지스트리 기능
+** docker의 공식 레지스트리 서비스인 docker hub도 이 docker registry를 사용하고 있음.
+
+* docker componse : 컨테이너 일원 관리
+** 여러 개의 컨테이너 구성 정보를 코드로 정의하고, 명령을 실행함으로써 애플리케이션의 실행 환경을 구성하는 컨테이너들을 일원 관리하기 위찬 툴
+
+* docker machine : docker 실행 환경 구축
+** 로컬 호스트용인 VirtualBox를 비롯하여 Amazon Web Services EC2나 Microsoft Azure와 같은 클라우드 환경에 Docker의 실행 환견을 명령으로 자동 생성하기 위한 툴
+
+* doekcr swarm : 클러스터 관리
+** docker swarm은 여러 docker 호스트를 클러스터화하기 위한 툴입니다.
+** docker swarm에서는 클러스터를 관리하거나 API를 제공하는 역할은 Manager가, Docker 컨테이너를 실행하는 역할은 Node가 담당합니다.
+** 또한 오픈소스인 Kubernates도 이용할 수 있습니다.
