@@ -1,6 +1,6 @@
 ---
 title: "docker의 기능"
-date: 2019-05-08 
+date: 2019-05-08
 categories:
   - docker
 toc: true
@@ -85,19 +85,12 @@ toc: true
 	* 예를 들어 자식이 부모의 제한을 초과하는 설정을 하더라도 부모 cgroups의 제한에 걸립니다.
 
 
----
-
 
 * 네트위크 구성 : 가상 브리지/가상 NIC
 	* linux는 docker를 설치하면 서버의 물리 NIC가 docker0이라는 가상 브리지 네트워크로 연결됩니다.
-	* 이 docker0은 Docker를 실행시긴 후에 디폴트로 만들어집니다. 
+  * ![](/assets/images/docker_ip.PNG)
+	* 이 docker0은 Docker를 실행시긴 후에 디폴트로 만들어집니다.
 	* docker 컨테이너가 실행되면 컨테이너에 172.17.0.0/16이라는 서브넷 마스크를 가진 프라이빗 IP 주소가 eth0으로 자동으로 할당됩니다.
 	* 이 가상 NIC는 OSI 참조 모델의 리이어 2인 가상 네트워크 인터페이스로. 페어인 NIC와 터널링 통신을 합니다.
 	* docker 컨테이너와 외부 네트워크가 통신을 할 때는 가상 브리지 docker0과 호스트 os의 물리 NIC에서 패킷을 전송하는 장치가 필요합니다.
-
-
-
-
-
-
-
+  *
