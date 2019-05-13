@@ -1,6 +1,6 @@
 ---
-title: "docker 설치와 튜토리얼"
-date: 2019-05-10
+title: "docker 기본 명령어"
+date: 2019-05-13
 categories:
   - docker
 toc: true
