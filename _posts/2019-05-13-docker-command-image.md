@@ -1,5 +1,5 @@
 ---
-title: "docker 기본 명령어"
+title: "docker 기본 명령어:docker 이미지 조작"
 date: 2019-05-13
 categories:
   - docker
