@@ -143,9 +143,92 @@ toc: true
 * `docker logout [서버명]`
    
   
+## Docker 이미지 생성
 
 
-    
+### 컨테이너로부터 이미지 작성 (docker container commit)
+
+* `docker container commit [옵션] <컨테이너 식별자> [이미지명[:태그명]]`
+
+* 옵션 | 설명
+  ---- | ----
+  --author, -a | 작성자를 지정
+  --message, -m | 메시지를 지정
+  --change, -c | 커밋 시 Dockerfile 명령을 지정
+  --puase, -p | 컨테이너를 일시 정지하고 커밋
+  
+* `docker container commit -a "ASA SHIHO" webserver asashiho/webfront:1.0`
+
+
+
+### 컨테이너를 tar 파일로 출력 (docker container export)
+
+* `docker container export <컨테이너 식별자>`
+
+* `docker container export webserver > latest.tar`
+
+
+
+### tar 파일로부터 이미지 작성 (docker image import)
+
+* `docker image import <파일 또는 URL> | - [이미지명[:태그명]]`
+
+* 지정 가능 아카이브 파일
+  * tar
+  * tar.gz
+  * tgz
+  * bzip
+  * tar.xz
+  * txz
+
+* `cat latest.txt | docker image import - asashiho/webfront:1.1`
+
+
+
+### 이미지 저장 (docker image save)
+
+* `docker image save [옵션] <저장 파일명> [이미지명]`
+
+* `docker image save -o export.tar tensorflow`
+  * -o : 저장할 파일명
+  
+  
+### 이미지 읽어 들이기 (docker image load)
+
+
+* `docker image load [옵션]`
+
+* `docker image load -i export.tar`
+  * -i : 읽어 들일 파일명
+  
+  
+
+ 
+### export/import와 save/load의 차이
+
+
+* 압축 아카이브에서는 docker container export 명령
+* 작성한 것을 읽어 들일 때는 docker image import
+* docker image save 명령으로 생성한 것을 읽어 들일 때는 docker image load 명령을 사용
+
+
+
+### 불필요한 이미지/컨테이너를 일괄 삭제 (docker system prune)
+
+* `docker system prune [옵션]`
+
+* 옵션 | 설명
+  ---all, -a | 사용하지 않는 리소스를 모두 삭제
+  --force, -f | 강제적으로 삭제
+  
+* `docker system prune -a`
+
+
+
+
+
+
+
   
   
  
