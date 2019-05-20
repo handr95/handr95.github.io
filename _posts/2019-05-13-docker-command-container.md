@@ -336,8 +336,155 @@ toc: true
 * 컨테이너 재개
   * `docker container unpause <컨테이너 식별자>`
 
+## Docker 컨테이너 네트워크
+
+* docker 컨테이너끼리 통신을 할 때는 docker 네트워크를 통해 수행한다.
+
+
+### 네트워크 목록 표시 (docker network ls)
+
+* `docker network ls [옵션]`
+
+* 옵션 | 설명
+  ----| ----
+  -f, --filter=[] | 출력을 필터링한다.
+  --no-trunc | 상세 정보를 출력한다.
+  -q, --quiet | 네트워크 ID만 표시한다.
+  
+* --filter=[] 옵션
+  * 값 | 설명
+    ---- | ----
+    driver | 드라이버 지정
+    id | 네트워크 ID
+    label | 네트워크에 설정된 라벨(label=<key> 또는 label=<key>=<value>로 지정한다)
+    name | 네트워크명
+    scope | 네트워크의 스코프 (swarm/global/local)
+    type | 네트워크의 타입(사용자 정의 네트워크 custom/정의 완료 네트워크 bulitin)
+    
+* `docker network ls -q --filter driver=brige`
+
+* 컨테이너 시작 시에 네트워크를 명시적으로 지정하지 않을 때는 기본값인 브리지 네트워크로 실행된다.
+
+
+### 네트워크 작성 (docker network create)
+
+* `docker network create [옵션] 네트워크`
+
+* 옵션 | 설명
+  ---- | ----
+  --drive, -d | 네트워크 브리지 또는 오버레이. (default:bridge)
+  --ip-range | 컨테이너 할당하는 IP 주소의 범위를 지정
+  --subnet | 서브넷을 CIDR 형식으로 지정
+  --ipv6 | IPv6 네트워크를 유효화할지 말지 (true/false)
+  --label | 네트워크에 설정하는 라벨
+  
+* `docker network create --driver=bridge web-network`
+
+
+### 네트워크 연결 (docker network connect/docker network disconnect)
+
+* `docker network connect [옵션] 네트워크 컨테이너`
+
+* 옵션 | 설명
+  ---- | ----
+  --ip | IPv4 주소
+  --ip6 | IPv6 주소
+  --alias | 엘리어스명
+  --link | 다른 컨테이너에 대항 링크
+  
+* `docker network connect web-network webfront`
+
+* `docker container run -itd --name=webap --net-web-network nginx`
+
+* `docker network disconnect web-network webfront`
  
+ 
+### 네트워크 상세 정보 확인 (docker network inspect)
+
+* `docker network inspect [옵션] 네트워크`
 
 
+### 네트워크 삭제 (docker network rm)
+
+* `docker network rm [옵션] 네트워크`
+
+* `docker network rm web-network`
+
+
+## 가동 중인 docker 컨테이너 조작
+
+
+
+
+### 가동 컨테이너 연결 (docker container attach)
+
+* ctrl+c : 컨테이너 연결 종료
+
+* ctrl+p, ctrl+q : 컨테이너를 시작한 채로 컨테이너 안에서 동작하는 프로세스만 종료
+
+
+
+### 가동 컨테이너에서 프로세스 실행 (docker container exec)
+
+* 가동 중인 컨테이너에서 새로운 프로세스 실행
+  * 예를 들어 웹 서버와 같이 백그라운드에서 실행되고 있는 컨테이너에 엑세스하고 싶을 때 
+  * docker container attach 명령으로 연결해도 쉘이 작동하지 않는 경우는 명령을 실행할 수가 없다.
+
+* `docker container exec [옵션] <컨테이너 식별자> <실행할 명령> [인수]`
+
+* 옵션 | 설명
+  ---- | ----
+  --detach, -d | 명령을 백그라운드에서 실행한다.
+  --interactive, -i | 컨테이너의 표준 입력을 연다.
+  --tty, -t | tty 모드(pseudo-TTY)를 사용
+  --user, -u | 사용자명을 지정
+  
+
+
+### 가동 컨테이너의 프로세스 확인 (docker container top)
+
+* `docker container top webserver`
+
+
+### 가동 컨테이너 포트 전송 확인 (docker container port)
+
+* `docker container port webserver`
+
+* ```text
+  PS C:\Workspace> docker container port redis
+  6379/tcp -> 0.0.0.0:40010
+  ```
+
+
+### 컨테이너 이름 변경 (docker container rename
+
+* `docker container rename old new`
+
+
+
+### 컨테이너 안의 파일을 복사 (docker container cp)
+
+* `docker container cp <컨테이너 식별자>:<컨테이너 안의 파일 경로> <호스트의 디렉토리 경로>`
+
+* `docker container cp <호스트의 파일> <컨테이너 식별자>:<컨테이너 안의 파일 경로>`
+
+* `docker container cp webserver:/etc/nginx/nginx.conf /tmp/nginx.conf`
+
+* `docker container cp ./test.txt webserver:/tmp/test.txt`
+
+
+
+### 컨테이너 조작의 차분 확인 (docker container diff)
+
+* `docker container diff <컨테이너 식별자>`
+
+* 변경의 구분
+  * 구분 | 설명
+    ---- | ----
+    A | 파일 추가
+    D | 파일 삭제
+    C | 파일 수정
   
   
+
+
