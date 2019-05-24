@@ -94,8 +94,97 @@ toc: true
 
 * Dockerfile 작성
   * ```text
-    PS C:\workspace> docker build -t sample:1.0 /home/docker/sample
+    FROM centos:centos7
+    ```
+  * ```text
+    PS C:\workspace\git_blog> docker build -t sampler:1.0 ..\git_blog\
+    Sending build context to Docker daemon  445.4kB
+    Step 1/1 : FROM centos:centos7
+    centos7: Pulling from library/centos
+    8ba884070f61: Pull complete
+    Digest: sha256:b5e66c4651870a1ad435cd75922fe2cb943c9e973a9673822d1414824a1d0475
+    Status: Downloaded newer image for centos:centos7
+     ---> 9f38484d220f
+    Successfully built 9f38484d220f
+    Successfully tagged sampler:1.0
+    SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host.
+    All files and directories added to build context will have '-rwxr-xr-x' permissions.
+    It is recommended to double check and reset permissions for sensitive files and directories.
+    PS C:\workspace\git_blog> docker images
+    REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+    sampler             1.0                 9f38484d220f        2 months ago        202MB
+    ```
+
+* -f : 파일명 지정
+  * `docker buildi -t sample -f Dockerfile.base .`
+  * . : 커맨드 디렉토리
+
+
+* - : 표준 입력에서의 빌드
+  * `docker build - < Dockerfile`
+  * 빌드에 필요한 파일 포함 시킬 수 없다. ex) ADD 명령으로 이미지 않에 파일 추가 못함
+
+
+* docker는 이미지를 빌드할 때 자동으로 중간 이미지를 생성한다.
+  * 다른 이미지를 빌드할 때 중간 이미지를 내부적으로 재이용함으로써 빌드를 고속으로 수행
+  * 이미지를 재이용하고 있을 경우, 'Using cache'라고 표시된다.
+  * 캐시를 이용하고 싶지 않은 경우 docker build 명령에서 --no-cache 옵션을 사용한다.
+
+
+### Docker 이미지 레이어 구조
+
+* dockerfile
+  * ```text
+    # STEP:1 Ubuntu (베이스 이미지)
+    FROM ubuntu:latest
+
+    # STEP:2 Nginx 설치
+    RUN apt-get update && apt-get install -y -q nginx
+
+    # STEP:3 파일 복사
+    COPY index.html /usr/share/nginx/html/
+
+    #STEP:4 Nginx 시작
+    CMD ["nginx", "-g", "daemon off;"]
     ```
 
 
+
+## 멀티 스테이지 빌드를 사용한 애플리케이션 개발
+
+
+### Dockerfile 만들기
+
+* Dockerfile
+  * ```text
+    # 1. Build Image
+    FROM golang:1.8.4-jessie AS builder
+
+    #Install dependencies
+    WORKDIR /go/src/github.com/asashiho/greet
+    RUN go get -d -v github.com/urfave/dli
+
+    # Build modules
+    COPY main.go .
+    RUN GOOS=linux go build -a -o greet .
+
+    # -------------------------------
+    # 2. Production Image
+    FROM busybox
+    WOEKDIR /opt/greet/bin
+
+    # Deploy modules
+    COPY --from=builder /go/src/github.com/asashiho/greet/ .
+    ENTRYPOINT ["./greet"]
+    ```
+
+* Dockerfile 구분
+  * 개발 환경용 Docker 이미지
+    * 개발용 언어 Go를 베이스 이미지로 작성
+    * 개발에 필요한 버전을 설치하여 로컬 환경에 있는 소스코드를 컨테이너 안으로 복사
+    * 이 소스 코드를 go build 명령으로 빌드하여 'greet'이라는 이름의 실행 가능 바이너리 파일을 작성
+  * 제품 환경용 Docker 이미지
+    * 'busybox'라는 이름의 실행 가능 바이너리 파일을 제품 환경용 Docker 이미지로 복사
+    * --from 옵션을 이용하여 'builder'라는 이름의 이미지로부터 복사를 한다는 것을 선언함
+    * 마지막으로 복사한 실행 가능 바이너리 파일을 실행하는 명령을 적습니다.
 
